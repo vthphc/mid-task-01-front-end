@@ -1,26 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import Dashboard from "./pages/Dashboard";
+import SignUpPage from "./pages/SignUpPage";
+import Customer from "./pages/Customer";
+import AddNewCustomer from "./pages/AddNewCustomer";
+import EditCustomer from "./pages/EditCustomer";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+    return (
+        <div className="max-w-[96rem]">
+            <Routes>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path='/dashboard/customers' element={<Customer />} />
+                <Route path='/dashboard/add-customer' element={<AddNewCustomer />} />
+                <Route path='/dashboard/edit-customer/:id' element={<EditCustomer />} />
+                <Route path="/signup" element={<SignUpPage />} />
+            </Routes>
+        </div>
+    );
 }
-
-export default App;
