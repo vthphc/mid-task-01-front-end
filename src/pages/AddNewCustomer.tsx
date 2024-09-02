@@ -40,6 +40,15 @@ export default function AddNewCustomer() {
             return;
         }
 
+        const { dateOfBirth } = newCustomer;
+        const dob = new Date(dateOfBirth);
+        const today = new Date();
+
+        if (dob > today) {
+            alert("Invalid date: Date of birth cannot be in the future");
+            return;
+        }
+
         try {
             const response = await fetch("http://localhost:5000/customers", {
                 method: "POST",
@@ -141,25 +150,6 @@ export default function AddNewCustomer() {
                     />
                     <label
                         className="font-montserrat text-[14px] font-light"
-                        htmlFor="gender"
-                    >
-                        Gender
-                    </label>
-                    <input
-                        id="dateOfBirth"
-                        type="text"
-                        className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
-                        required
-                        value={newCustomer.gender}
-                        onChange={(e) =>
-                            setNewCustomer({
-                                ...newCustomer,
-                                gender: e.target.value,
-                            })
-                        }
-                    />
-                    <label
-                        className="font-montserrat text-[14px] font-light"
                         htmlFor="dateOfBirth"
                     >
                         Date of Birth
@@ -177,6 +167,32 @@ export default function AddNewCustomer() {
                             })
                         }
                     />
+                                        <label
+                        className="font-montserrat text-[14px] font-light"
+                        htmlFor="gender"
+                    >
+                        Gender
+                    </label>
+                    <select
+                        id="gender"
+                        className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
+                        required
+                        value={newCustomer.gender}
+                        onChange={(e) =>
+                            setNewCustomer({
+                                ...newCustomer,
+                                gender: e.target.value,
+                            })
+                        }
+                    >
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                        <option value="preferNotToSay">
+                            Prefer Not to Say
+                        </option>
+                    </select>
                 </div>
             </div>
         </div>

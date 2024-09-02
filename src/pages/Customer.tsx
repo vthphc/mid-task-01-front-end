@@ -1,9 +1,10 @@
 import React from "react";
 import SideBar from "../components/SideBar";
 import CustomerCard from "../components/CustomerCard";
+import debounce from "lodash.debounce";
 
 interface Customer {
-    _id: string;
+    id: number;
     fullName: string;
     phoneNumber: string;
     email: string;
@@ -89,6 +90,10 @@ export default function Customer() {
         fetchCustomers();
     }, [token]);
 
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [filters]);
+
     const filteredCustomers = customers.filter((customer) => {
         return (
             customer.fullName
@@ -107,7 +112,6 @@ export default function Customer() {
         );
     });
 
-    // Paginate the filtered customers
     const indexOfLastCustomer = currentPage * itemsPerPage;
     const indexOfFirstCustomer = indexOfLastCustomer - itemsPerPage;
     const currentCustomers = filteredCustomers.slice(
@@ -115,7 +119,6 @@ export default function Customer() {
         indexOfLastCustomer
     );
 
-    // Calculate total pages
     const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
     return (
@@ -206,7 +209,7 @@ export default function Customer() {
                 </div>
 
                 {currentCustomers.map((customer) => (
-                    <CustomerCard key={customer._id} customer={customer} />
+                    <CustomerCard key={customer.id} customer={customer} />
                 ))}
 
                 {/* Pagination Controls */}

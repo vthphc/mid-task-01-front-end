@@ -3,7 +3,7 @@ import editIcon from "../assets/icons/editing.png";
 import deleteIcon from "../assets/icons/delete.png";
 
 interface Customer {
-    _id: string;
+    id: number;
     fullName: string;
     phoneNumber: string;
     email: string;
@@ -18,7 +18,7 @@ export default function CustomerCard({ customer }: { customer: Customer }) {
     }
 
     const handleDelete = async () => {
-        console.log("Delete customer:", customer._id);
+        console.log("Delete customer:", customer.id);
         const isConfirmed = window.confirm(
             "Are you sure you want to delete this customer?"
         );
@@ -29,7 +29,7 @@ export default function CustomerCard({ customer }: { customer: Customer }) {
 
         try {
             const response = await fetch(
-                `http://localhost:5000/customers/${customer._id}`,
+                `http://localhost:5000/customers/${customer.id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -50,7 +50,7 @@ export default function CustomerCard({ customer }: { customer: Customer }) {
     };
 
     const handleEdit = () => {
-        window.location.href = `/dashboard/edit-customer/${customer._id}`;
+        window.location.href = `/dashboard/edit-customer/${customer.id}`;
     };
 
     return (

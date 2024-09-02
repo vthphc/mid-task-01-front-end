@@ -2,6 +2,7 @@ import React from "react";
 import SideBar from "../components/SideBar";
 
 interface Customer {
+    id: number;
     fullName: string;
     phoneNumber: string;
     email: string;
@@ -10,7 +11,18 @@ interface Customer {
 }
 
 export default function EditCustomer() {
+    function formatDateToYYYYMMDD(dateString: string): string {
+        const date = new Date(dateString);
+
+        const year = date.getUTCFullYear();
+        const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(date.getUTCDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    }
+
     const [newCustomer, setNewCustomer] = React.useState<Customer>({
+        id: 0,
         fullName: "",
         phoneNumber: "",
         email: "",
@@ -24,12 +36,28 @@ export default function EditCustomer() {
         fetch(`http://localhost:5000/customers/${customerID}`)
             .then((res) => res.json())
             .then((data) => {
-                setNewCustomer(data);
+                const adjustedDateOfBirth = new Date(data.dateOfBirth);
+                adjustedDateOfBirth.setDate(adjustedDateOfBirth.getDate() + 1);
+
+                const formattedDateOfBirth = adjustedDateOfBirth
+                    .toISOString()
+                    .split("T")[0];
+                setNewCustomer({
+                    ...data,
+                    dateOfBirth: formattedDateOfBirth,
+                });
             });
     }, [customerID]);
 
     const handleSave = async () => {
         try {
+            const adjustedCustomer = {
+                ...newCustomer,
+                dateOfBirth: new Date(newCustomer.dateOfBirth)
+                    .toISOString()
+                    .split("T")[0],
+            };
+
             const response = await fetch(
                 `http://localhost:5000/customers/${customerID}`,
                 {
@@ -37,7 +65,7 @@ export default function EditCustomer() {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(newCustomer),
+                    body: JSON.stringify(adjustedCustomer),
                 }
             );
 
@@ -153,7 +181,7 @@ export default function EditCustomer() {
                         type="date"
                         className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] border-[#a1a1a1] p-4"
                         required
-                        value={newCustomer.dateOfBirth}
+                        value={formatDateToYYYYMMDD(newCustomer.dateOfBirth)}
                         onChange={(e) =>
                             setNewCustomer({
                                 ...newCustomer,

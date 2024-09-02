@@ -20,8 +20,8 @@ export default function LoginPage() {
                 throw new Error("Login failed");
             }
 
-            const { token } = await response.json();
-            localStorage.setItem("token", token);
+            const { accessToken } = await response.json();
+            localStorage.setItem("token", accessToken);
 
             console.log("Login successful");
             window.location.href = "/dashboard";

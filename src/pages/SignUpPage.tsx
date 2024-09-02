@@ -7,39 +7,45 @@ export default function SignUpPage() {
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
-        if (password !== confirmPassword) {
-            alert("Passwords do not match");
+
+        if (!username || !password || !confirmPassword) {
+            alert("Please fill in all fields");
             return;
         } else {
-            try {
-                const response = await fetch(
-                    "http://localhost:5000/auth/signup",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            username,
-                            password,
-                            role: "admin",
-                        }),
+            if (password !== confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            } else {
+                try {
+                    const response = await fetch(
+                        "http://localhost:5000/auth/signup",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                username,
+                                password,
+                                role: "admin",
+                            }),
+                        }
+                    );
+
+                    if (!response.ok) {
+                        alert("Invalid username or password");
+                        throw new Error("Signup failed");
                     }
-                );
 
-                if (!response.ok) {
-                    alert("Invalid username or password");
-                    throw new Error("Signup failed");
+                    const { token } = await response.json();
+                    localStorage.setItem("token", token);
+
+                    console.log("Signup successful");
+                    alert("Signup successful");
+                    window.location.href = "/";
+                } catch (error) {
+                    console.error("Signup failed", error);
                 }
-
-                const { token } = await response.json();
-                localStorage.setItem("token", token);
-
-                console.log("Signup successful");
-                alert("Signup successful");
-                window.location.href = "/";
-            } catch (error) {
-                console.error("Signup failed", error);
             }
         }
     };
