@@ -95,6 +95,13 @@ export default function Customer() {
     }, [filters]);
 
     const filteredCustomers = customers.filter((customer) => {
+        const customerYear = new Date(customer.dateOfBirth).getFullYear();
+        const filterYear = filters.dateOfBirth
+            ? new Date(filters.dateOfBirth).getFullYear()
+            : "";
+
+        const validGender = filters.gender ? filters.gender.toLowerCase() : "";
+
         return (
             customer.fullName
                 .toLowerCase()
@@ -105,10 +112,9 @@ export default function Customer() {
             customer.email
                 .toLowerCase()
                 .includes(filters.email.toLowerCase()) &&
-            customer.gender
-                .toLowerCase()
-                .includes(filters.gender.toLowerCase()) &&
-            customer.dateOfBirth.toString().includes(filters.dateOfBirth)
+            (validGender === "" ||
+                customer.gender.toLowerCase() === validGender) &&
+            customerYear.toString().includes(filterYear.toString())
         );
     });
 
@@ -126,7 +132,9 @@ export default function Customer() {
             <SideBar />
             <div className="py-8 ml-64 w-full space-y-4 px-8">
                 <div className="flex items-center flex-row justify-between">
-                    <h1 className="text-3xl font-bold">Customers</h1>
+                    <h1 className="text-3xl font-montserrat font-bold">
+                        Customers
+                    </h1>
                     <button
                         onClick={() => {
                             window.location.href = "/dashboard/add-customer";
@@ -138,7 +146,7 @@ export default function Customer() {
                 </div>
 
                 {/* Filter Inputs */}
-                <div className="flex flex-row justify-between pr-20 py-4 w-full">
+                <div className="flex flex-row justify-between space-x-12 pr-20 py-4 w-full">
                     <input
                         type="text"
                         placeholder="Full Name"
@@ -146,7 +154,7 @@ export default function Customer() {
                         onChange={(e) =>
                             setFilters({ ...filters, fullName: e.target.value })
                         }
-                        className="border p-2 mr-2"
+                        className="flex-1 border p-2 mr-2"
                     />
                     <input
                         type="text"
@@ -158,7 +166,7 @@ export default function Customer() {
                                 phoneNumber: e.target.value,
                             })
                         }
-                        className="border p-2 mr-2"
+                        className="flex-1 border p-2 mr-2"
                     />
                     <input
                         type="text"
@@ -167,20 +175,28 @@ export default function Customer() {
                         onChange={(e) =>
                             setFilters({ ...filters, email: e.target.value })
                         }
-                        className="border p-2 mr-2"
+                        className="flex-1 border p-2 mr-2"
                     />
-                    <input
-                        type="text"
-                        placeholder="Gender"
+                    <select
+                        id="gender"
+                        className="flex-1 border p-2 mr-2"
+                        required
                         value={filters.gender}
                         onChange={(e) =>
                             setFilters({ ...filters, gender: e.target.value })
                         }
-                        className="border p-2 mr-2"
-                    />
+                    >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="PreferNotToSay">
+                            Prefer Not to Say
+                        </option>
+                    </select>
                     <input
-                        type="date"
-                        placeholder="Date of Birth"
+                        type="number"
+                        placeholder="Year of Birth"
                         value={filters.dateOfBirth}
                         onChange={(e) =>
                             setFilters({
@@ -188,7 +204,9 @@ export default function Customer() {
                                 dateOfBirth: e.target.value,
                             })
                         }
-                        className="border p-2"
+                        className="flex-1 border p-2 mr-2"
+                        min={1900}
+                        max={2024}
                     />
                 </div>
 

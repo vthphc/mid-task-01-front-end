@@ -4,8 +4,40 @@ export default function LoginPage() {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const handleSubmit = async (e: { preventDefault: () => void }) => {
-        e.preventDefault();
+    const [isUsernameValid, setIsUsernameValid] = React.useState(true);
+    const [isPasswordValid, setIsPasswordValid] = React.useState(true);
+
+    const [isLoginFailed, setIsLoginFailed] = React.useState(false);
+
+    const validateUsername = () => {
+        if (!username) {
+            setIsUsernameValid(false);
+            return false;
+        }
+
+        setIsUsernameValid(true);
+        return true;
+    };
+
+    const validatePassword = () => {
+        if (password.length < 8) {
+            setIsPasswordValid(false);
+            return false;
+        }
+
+        setIsPasswordValid(true);
+        return true;
+    };
+
+    const handleSubmit = async () => {
+        if (!validateUsername()) {
+            return;
+        }
+
+        if (!validatePassword()) {
+            return;
+        }
+
         try {
             const response = await fetch("http://localhost:5000/auth/login", {
                 method: "POST",
@@ -16,7 +48,7 @@ export default function LoginPage() {
             });
 
             if (!response.ok) {
-                alert("Invalid username or password");
+                setIsLoginFailed(true);
                 throw new Error("Login failed");
             }
 
@@ -33,12 +65,19 @@ export default function LoginPage() {
     return (
         <div className="flex w-full h-screen pt-24 items-center bg-blue-600 justify-center">
             <div className="flex flex-col">
-                <div className="flex flex-col w-[42rem] bg-white rounded-2xl space-y-2 px-24 py-12">
+                <div className="flex flex-col w-[42rem] bg-white rounded-2xl space-y-4 px-24 py-12">
                     <div className="flex w-full justify-center">
                         <h1 className="font-montserrat text-[24px] font-bold">
                             Login
                         </h1>
                     </div>
+                    {isLoginFailed && (
+                        <div className="p-4 flex w-full justify-center bg-red-100 border border-red-500 items-center">
+                            <span className="text-red-500 font-montserrat text-[14px] font-light">
+                                Invalid username or Password
+                            </span>
+                        </div>
+                    )}
                     <div className="flex flex-col space-y-8">
                         <div className="flex flex-col space-y-2">
                             <label
@@ -55,6 +94,11 @@ export default function LoginPage() {
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
+                            {!isUsernameValid && (
+                                <p className="text-red-500 font-montserrat text-[14px] font-light">
+                                    Username is required
+                                </p>
+                            )}
                             <label
                                 className="font-montserrat text-[14px] font-light"
                                 htmlFor="password"
@@ -69,6 +113,11 @@ export default function LoginPage() {
                                 required
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+                            {!isPasswordValid && (
+                                <p className="text-red-500 font-montserrat text-[14px] font-light">
+                                    Password must be at least 8 characters
+                                </p>
+                            )}
                         </div>
                         <div className="flex justify-between space-x-8">
                             <button

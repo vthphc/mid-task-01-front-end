@@ -65,18 +65,6 @@ export default function SideBar() {
                     <div className="flex flex-col justify-between h-full">
                         <div className="flex flex-col space-y-8">
                             <a
-                                href="/products"
-                                className="font-montserrat text-white text-[18px] font-bold"
-                            >
-                                Products
-                            </a>
-                            <a
-                                href="/orders"
-                                className="font-montserrat text-white text-[18px] font-bold"
-                            >
-                                Orders
-                            </a>
-                            <a
                                 href="/dashboard/customers"
                                 className="font-montserrat text-white text-[18px] font-bold"
                             >

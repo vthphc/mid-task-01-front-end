@@ -6,6 +6,8 @@ import SignUpPage from "./pages/SignUpPage";
 import Customer from "./pages/Customer";
 import AddNewCustomer from "./pages/AddNewCustomer";
 import EditCustomer from "./pages/EditCustomer";
+import SettingPage from "./pages/SettingPage";
+import ChangePassword from "./pages/ChangePassword";
 
 export default function App() {
     return (
@@ -17,6 +19,8 @@ export default function App() {
                 <Route path='/dashboard/add-customer' element={<AddNewCustomer />} />
                 <Route path='/dashboard/edit-customer/:id' element={<EditCustomer />} />
                 <Route path="/signup" element={<SignUpPage />} />
+                <Route path="/settings" element={<SettingPage />} />
+                <Route path="/settings/change-password" element={<ChangePassword />} />
             </Routes>
         </div>
     );

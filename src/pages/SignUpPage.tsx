@@ -5,48 +5,97 @@ export default function SignUpPage() {
     const [password, setPassword] = React.useState("");
     const [confirmPassword, setConfirmPassword] = React.useState("");
 
-    const handleSubmit = async (e: { preventDefault: () => void }) => {
-        e.preventDefault();
+    const [isUsernameValid, setIsUsernameValid] = React.useState(true);
+    const [isPasswordValid, setIsPasswordValid] = React.useState(true);
+    const [isConfirmPasswordValid, setIsConfirmPasswordValid] =
+        React.useState(true);
 
-        if (!username || !password || !confirmPassword) {
-            alert("Please fill in all fields");
+    const [isUsernameExists, setIsUsernameExists] = React.useState(false);
+
+    const validateUsername = () => {
+        if (!username) {
+            setIsUsernameValid(false);
+            return false;
+        }
+
+        if (username.includes(" ")) {
+            setIsUsernameValid(false);
+            return false;
+        }
+
+        setIsUsernameValid(true);
+        return true;
+    };
+
+    const validatePassword = () => {
+        if (password.length < 8) {
+            setIsPasswordValid(false);
             return;
-        } else {
-            if (password !== confirmPassword) {
-                alert("Passwords do not match");
+        }
+
+        if (password.includes(" ")) {
+            setIsPasswordValid(false);
+            return false;
+        }
+
+        setIsPasswordValid(true);
+        return true;
+    };
+
+    const validateConfirmPassword = () => {
+        if (confirmPassword !== password) {
+            setIsConfirmPasswordValid(false);
+            return false;
+        }
+
+        setIsConfirmPasswordValid(true);
+        return true;
+    };
+
+    const handleSubmit = async () => {
+        if (!validateUsername()) {
+            return;
+        }
+
+        if (!validatePassword()) {
+            return;
+        }
+
+        if (!validateConfirmPassword()) {
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:5000/auth/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                    role: "admin",
+                }),
+            });
+
+            if (response.status === 401) {
+                setIsUsernameExists(true);
                 return;
-            } else {
-                try {
-                    const response = await fetch(
-                        "http://localhost:5000/auth/signup",
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                username,
-                                password,
-                                role: "admin",
-                            }),
-                        }
-                    );
-
-                    if (!response.ok) {
-                        alert("Invalid username or password");
-                        throw new Error("Signup failed");
-                    }
-
-                    const { token } = await response.json();
-                    localStorage.setItem("token", token);
-
-                    console.log("Signup successful");
-                    alert("Signup successful");
-                    window.location.href = "/";
-                } catch (error) {
-                    console.error("Signup failed", error);
-                }
             }
+
+            if (!response.ok) {
+                alert("Invalid username or password");
+                throw new Error("Signup failed");
+            }
+
+            const { token } = await response.json();
+            localStorage.setItem("token", token);
+
+            console.log("Signup successful");
+            alert("Signup successful");
+            window.location.href = "/";
+        } catch (error) {
+            console.error("Signup failed", error);
         }
     };
 
@@ -75,6 +124,16 @@ export default function SignUpPage() {
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
+                            {!isUsernameValid && (
+                                <p className="text-red-600 font-montserrat text-[14px] font-light">
+                                    Invalid username
+                                </p>
+                            )}
+                            {isUsernameExists && (
+                                <p className="text-red-600 font-montserrat text-[14px] font-light">
+                                    Username already exists
+                                </p>
+                            )}
                             <label
                                 className="font-montserrat text-[14px] font-light"
                                 htmlFor="password"
@@ -89,6 +148,11 @@ export default function SignUpPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+                            {!isPasswordValid && (
+                                <p className="text-red-600 font-montserrat text-[14px] font-light">
+                                    Password must be at least 8 characters
+                                </p>
+                            )}
                             <label
                                 className="font-montserrat text-[14px] font-light"
                                 htmlFor="password"
@@ -96,7 +160,7 @@ export default function SignUpPage() {
                                 Confirm Password
                             </label>
                             <input
-                                id="password"
+                                id="confirmPassword"
                                 type="password"
                                 className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
                                 required
@@ -105,6 +169,11 @@ export default function SignUpPage() {
                                     setConfirmPassword(e.target.value)
                                 }
                             />
+                            {!isConfirmPasswordValid && (
+                                <p className="text-red-600 font-montserrat text-[14px] font-light">
+                                    Passwords do not match
+                                </p>
+                            )}
                         </div>
                         <div className="flex justify-between space-x-8">
                             <button

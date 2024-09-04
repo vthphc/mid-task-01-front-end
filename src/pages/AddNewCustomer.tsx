@@ -18,34 +18,114 @@ export default function AddNewCustomer() {
         dateOfBirth: "",
     });
 
-    const validateCustomer = (customer: Customer) => {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const phonePattern = /^0\d{9}$/;
+    const [isCustomerNameValid, setIsCustomerNameValid] = React.useState(true);
+    const [isCustomerEmailValid, setIsCustomerEmailValid] =
+        React.useState(true);
+    const [isCustomerPhoneNumberValid, setIsCustomerPhoneNumberValid] =
+        React.useState(true);
+    const [isCustomerGenderValid, setIsCustomerGenderValid] =
+        React.useState(true);
+    const [isDateOfBirthValid, setIsDateOfBirthValid] = React.useState(true);
 
-        if (!emailPattern.test(customer.email)) {
-            alert("Please enter a valid email address.");
+    const [isCustomerEmailExists, setIsCustomerEmailExists] =
+        React.useState(true);
+    const [isCustomerPhoneNumberExists, setIsCustomerPhoneNumberExists] =
+        React.useState(true);
+
+    const validateCustomerName = (customer: Customer) => {
+        if (customer.fullName.trim().length === 0) {
+            setIsCustomerNameValid(false);
             return false;
         }
 
-        if (!phonePattern.test(customer.phoneNumber)) {
-            alert("Phone number must be 10 digits and start with '0'.");
+        if (customer.fullName.length < 3) {
+            setIsCustomerNameValid(false);
             return false;
         }
 
+        setIsCustomerNameValid(true);
         return true;
     };
 
-    const handleSubmit = async () => {
-        if (!validateCustomer(newCustomer)) {
-            return;
+    const validateCustomerGender = (customer: Customer) => {
+        if (customer.gender === "") {
+            setIsCustomerGenderValid(false);
+            return false;
         }
 
-        const { dateOfBirth } = newCustomer;
+        setIsCustomerGenderValid(true);
+        return true;
+    };
+
+    const validateCustomerEmail = (customer: Customer) => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(customer.email)) {
+            setIsCustomerEmailValid(false);
+            return false;
+        }
+
+        setIsCustomerEmailValid(true);
+        return true;
+    };
+
+    const validateCustomerPhoneNumber = (customer: Customer) => {
+        const phonePattern = /^0\d{9}$/;
+
+        if (!phonePattern.test(customer.phoneNumber)) {
+            setIsCustomerPhoneNumberValid(false);
+            return false;
+        }
+
+        setIsCustomerPhoneNumberValid(true);
+        return true;
+    };
+
+    const validateDateOfBirth = (customer: Customer) => {
+        const { dateOfBirth } = customer;
+        if (!dateOfBirth) {
+            setIsDateOfBirthValid(false);
+            return false;
+        }
+
         const dob = new Date(dateOfBirth);
         const today = new Date();
 
         if (dob > today) {
-            alert("Invalid date: Date of birth cannot be in the future");
+            setIsDateOfBirthValid(false);
+            return false;
+        }
+
+        setIsDateOfBirthValid(true);
+        return true;
+    };
+
+    const token = localStorage.getItem("token");
+
+    const handleSubmit = async () => {
+        if (!token) {
+            alert("Unauthorized access. Please login.");
+            window.location.href = "/";
+            return;
+        }
+
+        if (!validateCustomerName(newCustomer)) {
+            return;
+        }
+
+        if (!validateCustomerPhoneNumber(newCustomer)) {
+            return;
+        }
+
+        if (!validateCustomerEmail(newCustomer)) {
+            return;
+        }
+
+        if (!validateDateOfBirth(newCustomer)) {
+            return;
+        }
+
+        if (!validateCustomerGender(newCustomer)) {
             return;
         }
 
@@ -58,21 +138,34 @@ export default function AddNewCustomer() {
                 body: JSON.stringify(newCustomer),
             });
 
-            if (!response.ok) {
+            console.log(response.status);
+
+            if (response.status === 410) {
+                setIsCustomerEmailExists(false);
                 throw new Error("Failed to add new customer");
+            } else {
+                setIsCustomerEmailExists(true);
             }
 
-            alert("New customer added successfully");
-            setNewCustomer({
-                fullName: "",
-                phoneNumber: "",
-                email: "",
-                gender: "",
-                dateOfBirth: "",
-            });
-            window.location.href = "/dashboard/customers";
+            if (response.status === 411) {
+                setIsCustomerPhoneNumberExists(false);
+                throw new Error("Failed to add new customer");
+            } else {
+                setIsCustomerPhoneNumberExists(true);
+            }
+
+            if (response.ok) {
+                setNewCustomer({
+                    fullName: "",
+                    phoneNumber: "",
+                    email: "",
+                    gender: "",
+                    dateOfBirth: "",
+                });
+                alert("New customer added successfully");
+                window.location.href = "/dashboard/customers";
+            }
         } catch (error) {
-            alert("Phone number or email already exist");
             console.error("Failed to add new customer:", error);
         }
     };
@@ -100,7 +193,11 @@ export default function AddNewCustomer() {
                     <input
                         id="fullName"
                         type="text"
-                        className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
+                        className={`w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light ${
+                            isCustomerNameValid
+                                ? `border-[#a1a1a1]`
+                                : `border-red-600`
+                        } p-4`}
                         required
                         value={newCustomer.fullName}
                         onChange={(e) =>
@@ -110,6 +207,11 @@ export default function AddNewCustomer() {
                             })
                         }
                     />
+                    {!isCustomerNameValid && (
+                        <p className="text-red-500 text-right text-sm">
+                            Invalid name.
+                        </p>
+                    )}
                     <label
                         className="font-montserrat text-[14px] font-light"
                         htmlFor="phoneNumber"
@@ -119,7 +221,11 @@ export default function AddNewCustomer() {
                     <input
                         id="phoneNumber"
                         type="text"
-                        className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
+                        className={`w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light ${
+                            isCustomerPhoneNumberValid
+                                ? `border-[#a1a1a1]`
+                                : `border-red-600`
+                        } p-4`}
                         required
                         value={newCustomer.phoneNumber}
                         onChange={(e) =>
@@ -129,6 +235,17 @@ export default function AddNewCustomer() {
                             })
                         }
                     />
+                    {!isCustomerPhoneNumberValid && (
+                        <p className="text-red-500 text-right text-sm">
+                            Phone number must be 10 characters long and start
+                            with 0.
+                        </p>
+                    )}
+                    {!isCustomerPhoneNumberExists && (
+                        <p className="text-red-500 text-right text-sm">
+                            Phone number already exists.
+                        </p>
+                    )}
                     <label
                         className="font-montserrat text-[14px] font-light"
                         htmlFor="email"
@@ -138,7 +255,11 @@ export default function AddNewCustomer() {
                     <input
                         id="email"
                         type="email"
-                        className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
+                        className={`w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light ${
+                            isCustomerEmailValid
+                                ? `border-[#a1a1a1]`
+                                : `border-red-600`
+                        } p-4`}
                         required
                         value={newCustomer.email}
                         onChange={(e) =>
@@ -148,6 +269,16 @@ export default function AddNewCustomer() {
                             })
                         }
                     />
+                    {!isCustomerEmailValid && (
+                        <p className="text-red-500 text-right text-sm">
+                            Invalid email address.
+                        </p>
+                    )}
+                    {!isCustomerEmailExists && (
+                        <p className="text-red-500 text-right text-sm">
+                            Email already exists.
+                        </p>
+                    )}
                     <label
                         className="font-montserrat text-[14px] font-light"
                         htmlFor="dateOfBirth"
@@ -157,7 +288,11 @@ export default function AddNewCustomer() {
                     <input
                         id="dateOfBirth"
                         type="date"
-                        className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
+                        className={`w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light ${
+                            isDateOfBirthValid
+                                ? `border-[#a1a1a1]`
+                                : `border-red-600`
+                        } p-4`}
                         required
                         value={newCustomer.dateOfBirth}
                         onChange={(e) =>
@@ -167,7 +302,12 @@ export default function AddNewCustomer() {
                             })
                         }
                     />
-                                        <label
+                    {!isDateOfBirthValid && (
+                        <p className="text-red-500 text-right text-sm">
+                            Invalid date of birth.
+                        </p>
+                    )}
+                    <label
                         className="font-montserrat text-[14px] font-light"
                         htmlFor="gender"
                     >
@@ -175,7 +315,11 @@ export default function AddNewCustomer() {
                     </label>
                     <select
                         id="gender"
-                        className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
+                        className={`w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light ${
+                            isCustomerGenderValid
+                                ? `border-[#a1a1a1]`
+                                : `border-red-600`
+                        } p-4`}
                         required
                         value={newCustomer.gender}
                         onChange={(e) =>
@@ -186,13 +330,18 @@ export default function AddNewCustomer() {
                         }
                     >
                         <option value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                        <option value="preferNotToSay">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="PreferNotToSay">
                             Prefer Not to Say
                         </option>
                     </select>
+                    {!isCustomerGenderValid && (
+                        <p className="text-red-500 text-right text-sm">
+                            Please select gender.
+                        </p>
+                    )}
                 </div>
             </div>
         </div>
