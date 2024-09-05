@@ -81,7 +81,7 @@ export default function User() {
     return (
         <div className="flex flex-row">
             <SideBar />
-            <div className="py-8 ml-64 w-full space-y-4 px-8">
+            <div className="py-4 ml-64 w-full space-y-1 px-8">
                 <div className="flex items-center flex-row justify-between">
                     <h1 className="text-3xl font-montserrat font-bold">
                         Users
@@ -95,12 +95,12 @@ export default function User() {
                         value={usernameFilter}
                         onChange={(e) => setUsernameFilter(e.target.value)}
                         placeholder="Search by username"
-                        className="border px-4 py-2 rounded flex-[0.3]"
+                        className="flex-[0.3] border-2 p-2 mr-2 trasnfom duration-300 hover:border-blue-600 focus:border-blue-600 focus:outline-none"
                     />
                     <select
                         value={roleFilter}
                         onChange={(e) => setRoleFilter(e.target.value)}
-                        className="border px-4 py-2 rounded flex-[0.25]"
+                        className="flex-[0.25] border-2 p-2 mr-2 trasnfom duration-300 hover:border-blue-600 focus:border-blue-600 focus:outline-none"
                     >
                         <option value="">All Roles</option>
                         <option value="admin">Admin</option>
@@ -108,7 +108,7 @@ export default function User() {
                     <select
                         value={isBannedFilter}
                         onChange={(e) => setIsBannedFilter(e.target.value)}
-                        className="border px-4 py-2 rounded flex-[0.15]"
+                        className="flex-[0.15] border-2 p-2 mr-2 trasnfom duration-300 hover:border-blue-600 focus:border-blue-600 focus:outline-none"
                     >
                         <option value="">All Statuses</option>
                         <option value="true">Banned</option>
@@ -116,12 +116,12 @@ export default function User() {
                     </select>
                 </div>
 
-                <div>
-                    <div className="w-full bg-zinc-100 font-montserrat text-[16px] font-medium pl-4 pr-8 py-4">
+                <div className="pt-2">
+                    <div className="w-full bg-zinc-100 font-montserrat text-[16px] font-medium pl-4 pr-8 py-2">
                         <div className="flex justify-between font-extrabold text-left">
                             <div className="flex-[0.2] text-left">Username</div>
                             <div className="flex-[0.15] text-left">Role</div>
-                            <div className="flex-[0.15] text-left">Status</div>
+                            <div className="flex-[0.1] text-left">Status</div>
                             <div className="flex-[0.15] text-right">
                                 Actions
                             </div>
@@ -133,11 +133,11 @@ export default function User() {
                 ))}
 
                 {/* Pagination controls */}
-                <div className="flex justify-center space-x-4 mt-4">
+                <div className="flex justify-between space-x-4 pt-4">
                     <button
                         onClick={handlePreviousPage}
                         disabled={currentPage === 1}
-                        className={`px-4 py-2 bg-blue-600 text-white font-bold rounded ${
+                        className={`px-4 py-2 bg-blue-600 text-white font-bold rounded transform duration-300 hover:scale-105 ${
                             currentPage === 1 && "opacity-50 cursor-not-allowed"
                         }`}
                     >
@@ -149,7 +149,7 @@ export default function User() {
                     <button
                         onClick={handleNextPage}
                         disabled={currentPage === totalPages}
-                        className={`px-4 py-2 bg-blue-600 text-white font-bold rounded ${
+                        className={`px-4 py-2 bg-blue-600 text-white font-bold rounded transform duration-300 hover:scale-105 ${
                             currentPage === totalPages &&
                             "opacity-50 cursor-not-allowed"
                         }`}

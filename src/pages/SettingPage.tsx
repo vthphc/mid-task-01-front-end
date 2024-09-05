@@ -44,11 +44,11 @@ export default function SettingPage() {
     }, [token]);
 
     return (
-        <div className="flex flex-row">
+        <div className="flex flex-row bg-zinc-100 h-screen">
             <SideBar />
             <div className="py-8 ml-64 w-full space-y-4 px-8">
                 <h1 className="text-3xl font-montserrat font-bold">Settings</h1>
-                <div className="flex flex-col items-center w-full space-y-8">
+                <div className="flex flex-col h-[32rem] bg-white rounded-3xl justify-center items-center w-full space-y-8">
                     <div className="flex flex-col space-y-4">
                         <div className="flex-1 flex flex-col w-[20rem]">
                             <label className="text-lg font-montserrat font-semibold">
@@ -84,7 +84,7 @@ export default function SettingPage() {
                                         "/settings/change-password";
                                 }
                             }}
-                            className="w-full bg-blue-600 text-white font-montserrat text-[14px] font-light p-4"
+                            className="w-full transform duration-300 hover:scale-105 bg-blue-600 text-white font-montserrat text-[14px] font-bold p-4"
                         >
                             Change Password
                         </button>
@@ -93,7 +93,7 @@ export default function SettingPage() {
                                 localStorage.removeItem("token");
                                 window.location.href = "/";
                             }}
-                            className="w-full bg-red-600 text-white font-montserrat text-[14px] font-light p-4"
+                            className="w-full transform duration-300 hover:scale-105 bg-red-600 text-white font-montserrat text-[14px] font-bold p-4"
                         >
                             Logout
                         </button>

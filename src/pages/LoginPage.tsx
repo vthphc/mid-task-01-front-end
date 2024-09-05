@@ -1,4 +1,5 @@
 import React from "react";
+import loginImage from "../assets/images/login-img.png";
 
 export default function LoginPage() {
     const [username, setUsername] = React.useState("");
@@ -69,9 +70,16 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex w-full h-screen pt-24 items-center bg-blue-600 justify-center">
-            <div className="flex flex-col">
-                <div className="flex flex-col w-[42rem] bg-white rounded-2xl space-y-4 px-24 py-12">
+        <div className="flex w-full h-screen px-36 pt-24 items-center bg-blue-600 justify-center">
+            <div className="flex flex-row items-center">
+                <div className="flex">
+                    <img
+                        src={loginImage}
+                        alt="login"
+                        className="w-[70%] object-cover"
+                    />
+                </div>
+                <div className="flex flex-col w-[32rem] bg-white rounded-2xl space-y-4 px-12 py-12">
                     <div className="flex w-full justify-center">
                         <h1 className="font-montserrat text-[24px] font-bold">
                             Login
@@ -102,7 +110,7 @@ export default function LoginPage() {
                             <input
                                 id="username"
                                 type="text"
-                                className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
+                                className="w-full transform duration-300 hover:cursor-default hover:border-blue-400 focus:outline-none font-montserrat focus:border-blue-600 border-2 text-[14px] font-light border-[#a1a1a1] p-4"
                                 required
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
@@ -122,7 +130,7 @@ export default function LoginPage() {
                                 id="password"
                                 type="password"
                                 value={password}
-                                className="w-full focus:outline-none font-montserrat focus:border-zinc-800 border text-[14px] font-light border-[#a1a1a1] p-4"
+                                className="w-full transform duration-300 hover:cursor-default hover:border-blue-400 focus:outline-none font-montserrat focus:border-blue-600 border-2 text-[14px] font-light border-[#a1a1a1] p-4"
                                 required
                                 onChange={(e) => setPassword(e.target.value)}
                             />
@@ -137,13 +145,13 @@ export default function LoginPage() {
                                 onClick={() =>
                                     (window.location.href = "/signup")
                                 }
-                                className="w-full bg-zinc-200 text-black font-montserrat text-[14px] font-light p-4"
+                                className="w-full hover:scale-105 transform duration-300 bg-zinc-200 text-black font-montserrat text-[14px] font-light p-4"
                             >
                                 Sign Up
                             </button>
                             <button
                                 onClick={handleSubmit}
-                                className="w-full bg-blue-600 text-white font-montserrat text-[14px] font-light p-4"
+                                className="w-full hover:scale-105 transform duration-300 bg-blue-600 text-white font-montserrat text-[14px] font-light p-4"
                             >
                                 Login
                             </button>

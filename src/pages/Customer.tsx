@@ -163,7 +163,7 @@ export default function Customer() {
     return (
         <div className="flex flex-row">
             <SideBar />
-            <div className="py-8 ml-64 w-full space-y-4 px-8">
+            <div className="pt-4 ml-64 w-full space-y-1 px-8">
                 <div className="flex items-center flex-row justify-between">
                     <h1 className="text-3xl font-montserrat font-bold">
                         Customers
@@ -185,13 +185,13 @@ export default function Customer() {
                 </div>
 
                 {/* Filter Inputs */}
-                <div className="flex flex-row justify-between space-x-4 py-4 w-full">
+                <div className="flex flex-row justify-between space-x-4 py-2 w-full">
                     <input
                         type="text"
                         placeholder="Search ( Full Name, Phone Number, Email )"
                         value={searchKeyword}
                         onChange={(e) => setSearchKeyword(e.target.value)}
-                        className="flex-1 border p-2 mr-2"
+                        className="flex-1 border-2 p-2 mr-2 trasnfom duration-300 hover:border-blue-600 focus:border-blue-600 focus:outline-none"
                     />
                     {/* <input
                         type="text"
@@ -225,14 +225,14 @@ export default function Customer() {
                     /> */}
                     <select
                         id="gender"
-                        className="flex-1 border max-w-[12rem] p-2 mr-2"
+                        className="flex-1 max-w-[12rem] border-2 p-2 mr-2 trasnfom duration-300 hover:border-blue-600 focus:border-blue-600 focus:outline-none"
                         required
                         value={filters.gender}
                         onChange={(e) =>
                             setFilters({ ...filters, gender: e.target.value })
                         }
                     >
-                        <option value="">Select Gender</option>
+                        <option value="">All Genders</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Other">Other</option>
@@ -250,7 +250,7 @@ export default function Customer() {
                                 dateOfBirth: e.target.value,
                             })
                         }
-                        className="flex-1 border max-w-[12rem] p-2 mr-2"
+                        className="flex-1 max-w-[12rem] border-2 p-2 mr-2 trasnfom duration-300 hover:border-blue-600 focus:border-blue-600 focus:outline-none"
                         min={1900}
                         max={2024}
                     />
@@ -263,7 +263,7 @@ export default function Customer() {
                 </div>
 
                 <div>
-                    <div className="w-full bg-zinc-100 font-montserrat text-[16px] font-medium pl-4 pr-20 py-4">
+                    <div className="w-full bg-zinc-100 font-montserrat text-[16px] font-medium pl-4 pr-20 py-2">
                         <div className="flex justify-between font-extrabold text-left">
                             <div className="flex-[0.2] text-left">
                                 Full Name
@@ -272,7 +272,7 @@ export default function Customer() {
                                 Phone Number
                             </div>
                             <div className="flex-[0.25] text-left">Email</div>
-                            <div className="flex-[0.05] text-left">Gender</div>
+                            <div className="flex-[0.1] text-left">Gender</div>
                             <div className="flex-[0.2] text-left">
                                 Date of Birth
                             </div>
@@ -285,7 +285,7 @@ export default function Customer() {
                 ))}
 
                 {/* Pagination Controls */}
-                <div className="flex justify-between items-center py-4">
+                <div className="flex justify-between items-center py-2">
                     <button
                         onClick={() =>
                             setCurrentPage((prev) => Math.max(prev - 1, 1))

@@ -1,4 +1,6 @@
 import React from "react";
+import reddotIcon from "../assets/icons/reddot.png";
+import greendotIcon from "../assets/icons/greendot.png";
 
 interface UserCardProps {
     user: {
@@ -32,11 +34,12 @@ export default function UserCard({ user }: UserCardProps) {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
                         },
                     }
                 );
 
-                if (response.status === 403) {
+                if (response.status === 421) {
                     alert("You can not ban yourself");
                     throw new Error("You can not ban yourself");
                 }
@@ -87,7 +90,7 @@ export default function UserCard({ user }: UserCardProps) {
     };
 
     return (
-        <div className="w-full flex hover:bg-zinc-200 transform duration-300 hover:cursor-default items-center justify-between bg-zinc-100 font-montserrat text-[16px] font-medium px-4 py-4">
+        <div className="w-full flex hover:bg-zinc-200 transform duration-300 hover:cursor-default items-center justify-between bg-zinc-100 font-montserrat text-[16px] font-medium px-4 py-1">
             <div className="flex items-center justify-between w-full text-left">
                 <div
                     className={`flex-[0.2] text-left ${
@@ -104,24 +107,39 @@ export default function UserCard({ user }: UserCardProps) {
                     {user.role}
                 </div>
                 <div
-                    className={`flex-[0.15] text-left ${
-                        user.isBanned ? `text-red-600` : `text-black`
+                    className={`flex-[0.15] flex flex-row space-x-2 items-center text-left ${
+                        user.isBanned ? `text-black` : `text-black`
                     }`}
                 >
-                    {user.isBanned ? "Banned" : "Active"}
+                    {
+                        user.isBanned ? (
+                            <img
+                                src={reddotIcon}
+                                alt="dot-icon"
+                                className="w-5 h-5"
+                            />
+                        ) : (
+                            <img
+                                src={greendotIcon}
+                                alt="dot-icon"
+                                className="w-5 h-5"
+                            />
+                        )
+                    }
+                    <span>{user.isBanned ? "Banned" : "Active"}</span>
                 </div>
                 <div className="flex-[0.15] text-right">
                     {user.isBanned ? (
                         <button
                             onClick={handleUnban}
-                            className="bg-zinc-400 w-[6rem] flex-1 text-white p-2 rounded-md"
+                            className="bg-zinc-400 w-[6rem] flex-1 text-white px-2 py-1 rounded-md"
                         >
                             Unban
                         </button>
                     ) : (
                         <button
                             onClick={handleBan}
-                            className="bg-red-500 w-[6rem] flex-1 text-white p-2 rounded-md"
+                            className="bg-red-500 w-[6rem] flex-1 text-white px-2 py-1 rounded-md"
                         >
                             Ban
                         </button>

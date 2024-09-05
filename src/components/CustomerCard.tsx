@@ -1,6 +1,8 @@
 import React from "react";
 import editIcon from "../assets/icons/editing.png";
 import deleteIcon from "../assets/icons/delete.png";
+import maleIcon from "../assets/icons/male.png";
+import femaleIcon from "../assets/icons/female.png";
 
 interface Customer {
     id: number;
@@ -53,15 +55,24 @@ export default function CustomerCard({ customer }: { customer: Customer }) {
         window.location.href = `/dashboard/edit-customer/${customer.id}`;
     };
 
+    const genderIcon = customer.gender === "Male" ? maleIcon : femaleIcon;
+
     return (
-        <div className="w-full flex hover:bg-zinc-200 transform duration-300 hover:cursor-default items-center justify-between bg-zinc-100 font-montserrat text-[16px] font-medium px-4 py-4">
+        <div className="w-full flex hover:bg-zinc-200 transform duration-300 hover:cursor-default items-center justify-between bg-zinc-100 font-montserrat text-[16px] font-medium px-4 py-2">
             <div className="flex items-center justify-between w-full text-left">
                 <div className="flex-[0.2] text-left">{customer.fullName}</div>
                 <div className="flex-[0.15] text-left">
                     {customer.phoneNumber}
                 </div>
                 <div className="flex-[0.25] text-left">{customer.email}</div>
-                <div className="flex-[0.05] text-left">{customer.gender}</div>
+                <div className="flex-[0.1] flex text-left items-center space-x-2">
+                    <img
+                        src={genderIcon}
+                        alt="gender-icon"
+                        className="w-5 h-5"
+                    />
+                    <span>{customer.gender}</span>
+                </div>
                 <div className="flex-[0.2] text-left">
                     {formatDate(customer.dateOfBirth)}
                 </div>
