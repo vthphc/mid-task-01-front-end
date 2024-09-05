@@ -54,24 +54,30 @@ export default function CustomerCard({ customer }: { customer: Customer }) {
     };
 
     return (
-        <div className="w-full flex items-center justify-between bg-zinc-100 font-montserrat text-[16px] font-medium px-4 py-4">
+        <div className="w-full flex hover:bg-zinc-200 transform duration-300 hover:cursor-default items-center justify-between bg-zinc-100 font-montserrat text-[16px] font-medium px-4 py-4">
             <div className="flex items-center justify-between w-full text-left">
-                <div className="flex-1 text-center">{customer.fullName}</div>
-                <div className="flex-1 text-center">{customer.phoneNumber}</div>
-                <div className="flex-1 text-center">{customer.email}</div>
-                <div className="flex-1 text-center">{customer.gender}</div>
-                <div className="flex-1 text-center">
+                <div className="flex-[0.2] text-left">{customer.fullName}</div>
+                <div className="flex-[0.15] text-left">
+                    {customer.phoneNumber}
+                </div>
+                <div className="flex-[0.25] text-left">{customer.email}</div>
+                <div className="flex-[0.05] text-left">{customer.gender}</div>
+                <div className="flex-[0.2] text-left">
                     {formatDate(customer.dateOfBirth)}
                 </div>
             </div>
+
             <div>
                 <div className="flex items-center justify-center space-x-4">
-                    <div onClick={handleEdit} className="hover:cursor-pointer">
+                    <div
+                        onClick={handleEdit}
+                        className="hover:cursor-pointer hover:scale-110 transform duration-300"
+                    >
                         <img src={editIcon} alt="edit" className="w-6 h-6" />
                     </div>
                     <div
                         onClick={handleDelete}
-                        className="hover:cursor-pointer"
+                        className="hover:cursor-pointer hover:scale-110 transform duration-300"
                     >
                         <img
                             src={deleteIcon}

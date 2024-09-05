@@ -77,6 +77,7 @@ export default function SettingPage() {
                         <button
                             onClick={() => {
                                 if (!token) {
+                                    alert("Please login first");
                                     return;
                                 } else {
                                     window.location.href =

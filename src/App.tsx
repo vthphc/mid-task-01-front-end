@@ -8,6 +8,7 @@ import AddNewCustomer from "./pages/AddNewCustomer";
 import EditCustomer from "./pages/EditCustomer";
 import SettingPage from "./pages/SettingPage";
 import ChangePassword from "./pages/ChangePassword";
+import User from "./pages/User";
 
 export default function App() {
     return (
@@ -21,6 +22,7 @@ export default function App() {
                 <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/settings" element={<SettingPage />} />
                 <Route path="/settings/change-password" element={<ChangePassword />} />
+                <Route path="/dashboard/users"  element={<User />} />
             </Routes>
         </div>
     );

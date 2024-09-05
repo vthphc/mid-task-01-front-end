@@ -103,15 +103,6 @@ export default function Customer() {
         const validGender = filters.gender ? filters.gender.toLowerCase() : "";
 
         return (
-            customer.fullName
-                .toLowerCase()
-                .includes(filters.fullName.toLowerCase()) &&
-            customer.phoneNumber
-                .toLowerCase()
-                .includes(filters.phoneNumber.toLowerCase()) &&
-            customer.email
-                .toLowerCase()
-                .includes(filters.email.toLowerCase()) &&
             (validGender === "" ||
                 customer.gender.toLowerCase() === validGender) &&
             customerYear.toString().includes(filterYear.toString())
@@ -127,6 +118,48 @@ export default function Customer() {
 
     const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
+    const [searchKeyword, setSearchKeyword] = React.useState("");
+
+    const handleSearch = async () => {
+        if (!token) {
+            return;
+        } else {
+            if (searchKeyword === "") {
+                try {
+                    const response = await fetch(
+                        "http://localhost:5000/customers",
+                        {
+                            method: "GET",
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch customers");
+                    }
+                    setCustomers(await response.json());
+                } catch (error) {
+                    console.error("Error fetching customers:", error);
+                }
+            } else {
+                try {
+                    const response = await fetch(
+                        `http://localhost:5000/customers/search/${searchKeyword}`,
+                        {
+                            method: "GET",
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch customers");
+                    }
+                    setCustomers(await response.json());
+                } catch (error) {
+                    console.error("Error fetching customers:", error);
+                }
+            }
+        }
+    };
+
     return (
         <div className="flex flex-row">
             <SideBar />
@@ -137,17 +170,30 @@ export default function Customer() {
                     </h1>
                     <button
                         onClick={() => {
-                            window.location.href = "/dashboard/add-customer";
+                            if (!token) {
+                                alert("Please log in to add a customer");
+                                window.location.href = "/";
+                            } else {
+                                window.location.href =
+                                    "/dashboard/add-customer";
+                            }
                         }}
-                        className="bg-blue-600 text-white text-center font-bold py-2 px-4 rounded-md"
+                        className="bg-blue-600 hover:scale-105 transform duration-300 text-white text-center font-bold py-2 px-4 rounded-md"
                     >
                         Add Customer +
                     </button>
                 </div>
 
                 {/* Filter Inputs */}
-                <div className="flex flex-row justify-between space-x-12 pr-20 py-4 w-full">
+                <div className="flex flex-row justify-between space-x-4 py-4 w-full">
                     <input
+                        type="text"
+                        placeholder="Search ( Full Name, Phone Number, Email )"
+                        value={searchKeyword}
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                        className="flex-1 border p-2 mr-2"
+                    />
+                    {/* <input
                         type="text"
                         placeholder="Full Name"
                         value={filters.fullName}
@@ -176,10 +222,10 @@ export default function Customer() {
                             setFilters({ ...filters, email: e.target.value })
                         }
                         className="flex-1 border p-2 mr-2"
-                    />
+                    /> */}
                     <select
                         id="gender"
-                        className="flex-1 border p-2 mr-2"
+                        className="flex-1 border max-w-[12rem] p-2 mr-2"
                         required
                         value={filters.gender}
                         onChange={(e) =>
@@ -204,22 +250,30 @@ export default function Customer() {
                                 dateOfBirth: e.target.value,
                             })
                         }
-                        className="flex-1 border p-2 mr-2"
+                        className="flex-1 border max-w-[12rem] p-2 mr-2"
                         min={1900}
                         max={2024}
                     />
+                    <button
+                        onClick={handleSearch}
+                        className="bg-blue-600 hover:scale-105 transform duration-300 text-white text-center font-bold py-2 px-4 rounded-md"
+                    >
+                        Search
+                    </button>
                 </div>
 
                 <div>
                     <div className="w-full bg-zinc-100 font-montserrat text-[16px] font-medium pl-4 pr-20 py-4">
                         <div className="flex justify-between font-extrabold text-left">
-                            <div className="flex-1 text-center">Full Name</div>
-                            <div className="flex-1 text-center">
+                            <div className="flex-[0.2] text-left">
+                                Full Name
+                            </div>
+                            <div className="flex-[0.15] text-left">
                                 Phone Number
                             </div>
-                            <div className="flex-1 text-center">Email</div>
-                            <div className="flex-1 text-center">Gender</div>
-                            <div className="flex-1 text-center">
+                            <div className="flex-[0.25] text-left">Email</div>
+                            <div className="flex-[0.05] text-left">Gender</div>
+                            <div className="flex-[0.2] text-left">
                                 Date of Birth
                             </div>
                         </div>
@@ -237,7 +291,7 @@ export default function Customer() {
                             setCurrentPage((prev) => Math.max(prev - 1, 1))
                         }
                         disabled={currentPage === 1}
-                        className="bg-blue-600 text-white font-bold py-2 px-4 rounded-md mr-2"
+                        className="bg-blue-600 hover:scale-105 transform duration-300 text-white font-bold py-2 px-4 rounded-md mr-2"
                     >
                         Previous
                     </button>
@@ -251,7 +305,7 @@ export default function Customer() {
                             )
                         }
                         disabled={currentPage === totalPages}
-                        className="bg-blue-600 text-white font-bold py-2 px-4 rounded-md ml-2"
+                        className="bg-blue-600 hover:scale-105 transform duration-300 text-white font-bold py-2 px-4 rounded-md ml-2"
                     >
                         Next
                     </button>

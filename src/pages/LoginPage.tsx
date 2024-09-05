@@ -8,6 +8,7 @@ export default function LoginPage() {
     const [isPasswordValid, setIsPasswordValid] = React.useState(true);
 
     const [isLoginFailed, setIsLoginFailed] = React.useState(false);
+    const [isUserBanned, setIsUserBanned] = React.useState(false);
 
     const validateUsername = () => {
         if (!username) {
@@ -47,9 +48,14 @@ export default function LoginPage() {
                 body: JSON.stringify({ username, password }),
             });
 
-            if (!response.ok) {
+            if (response.status === 400) {
+                setIsUserBanned(false);
                 setIsLoginFailed(true);
                 throw new Error("Login failed");
+            } else if (response.status === 403) {
+                setIsLoginFailed(false);
+                setIsUserBanned(true);
+                throw new Error("User is banned");
             }
 
             const { accessToken } = await response.json();
@@ -75,6 +81,13 @@ export default function LoginPage() {
                         <div className="p-4 flex w-full justify-center bg-red-100 border border-red-500 items-center">
                             <span className="text-red-500 font-montserrat text-[14px] font-light">
                                 Invalid username or Password
+                            </span>
+                        </div>
+                    )}
+                    {isUserBanned && (
+                        <div className="p-4 flex w-full justify-center bg-red-100 border border-red-500 items-center">
+                            <span className="text-red-500 font-montserrat text-[14px] font-light">
+                                User is banned
                             </span>
                         </div>
                     )}
